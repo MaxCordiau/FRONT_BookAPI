@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Modal.css'; // Assurez-vous que le chemin est correct
 
 const Modal = ({ isOpen, onClose, item, onSave, onDelete, type, modalType }) => {
   const [formData, setFormData] = useState({
@@ -48,82 +47,124 @@ const Modal = ({ isOpen, onClose, item, onSave, onDelete, type, modalType }) => 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <button className="close-button" onClick={onClose}>X</button>
-        <h2>{modalType === 'create' ? `Ajouter un ${type}` : `Éditer ${type}`}</h2>
-        <form onSubmit={handleSubmit}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+        <div className="flex justify-between items-center p-6 border-b">
+          <h2 className="text-xl font-semibold text-gray-900">
+            {modalType === 'create' ? `Ajouter un ${type}` : `Éditer ${type}`}
+          </h2>
+          <button
+            className="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150"
+            onClick={onClose}
+          >
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6">
           {type === 'Livre' && (
             <>
-              <label>
-                Titre:
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                  Titre:
+                </label>
                 <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="title"
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
                   required
                 />
-              </label>
-              <label>
-                ISBN:
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="isbn">
+                  ISBN:
+                </label>
                 <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="isbn"
                   type="text"
                   name="isbn"
                   value={formData.isbn}
                   onChange={handleChange}
                 />
-              </label>
-              <label>
-                Année de Publication:
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="publishedYear">
+                  Année de Publication:
+                </label>
                 <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="publishedYear"
                   type="number"
                   name="publishedYear"
                   value={formData.publishedYear}
                   onChange={handleChange}
                 />
-              </label>
-              <label>
-                Description:
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+                  Description:
+                </label>
                 <textarea
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   required
                 />
-              </label>
+              </div>
             </>
           )}
           {type === 'Auteur' && (
             <>
-              <label>
-                Nom:
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+                  Nom:
+                </label>
                 <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="name"
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   required
                 />
-              </label>
-              <label>
-                Date de Naissance:
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="birthDate">
+                  Date de Naissance:
+                </label>
                 <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="birthDate"
                   type="date"
                   name="birthDate"
                   value={formData.birthDate}
                   onChange={handleChange}
                 />
-              </label>
+              </div>
             </>
           )}
-          <div className="modal-actions">
+          <div className="flex items-center justify-between mt-8">
             {modalType === 'edit' && (
-              <button type="button" onClick={handleDelete} className="delete-button">
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+              >
                 Supprimer
               </button>
             )}
-            <button type="submit" className="save-button">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+            >
               Sauvegarder
             </button>
           </div>
