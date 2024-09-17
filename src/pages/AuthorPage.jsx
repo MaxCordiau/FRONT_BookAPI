@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from '../components/Modal';
+import ErrorModal from '../components/ErrorModal';
 import '../styles/index.css';
 
 export default function AuthorPage() {
@@ -8,6 +9,8 @@ export default function AuthorPage() {
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalType, setModalType] = useState('');
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         fetchAuthors();
@@ -20,7 +23,7 @@ export default function AuthorPage() {
             });
             setAuthors(response.data);
         } catch (error) {
-            console.error("Erreur lors de la récupération des auteurs :", error);
+            handleError(error);
         }
     };
 
@@ -39,6 +42,9 @@ export default function AuthorPage() {
         try {
             const token = localStorage.getItem('token');
             if (modalType === 'edit' && selectedAuthor) {
+                if (!selectedAuthor.id) {
+                    throw new Error("ID de l'auteur est manquant.");
+                }
                 await axios.put(`http://localhost:3000/api/authors/${selectedAuthor.id}`, authorData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -56,7 +62,7 @@ export default function AuthorPage() {
             fetchAuthors();
             handleCloseModal();
         } catch (error) {
-            console.error("Erreur lors de l'enregistrement de l'auteur :", error);
+            handleError(error);
         }
     };
 
@@ -70,8 +76,13 @@ export default function AuthorPage() {
             });
             fetchAuthors();
         } catch (error) {
-            console.error("Erreur lors de la suppression de l'auteur :", error);
+            handleError(error);
         }
+    };
+
+    const handleError = (error) => {
+        setErrorMessage(error.response?.data?.message || 'Une erreur est survenue.');
+        setErrorModalOpen(true);
     };
 
     return (
@@ -91,7 +102,9 @@ export default function AuthorPage() {
                             className="bg-gray-100 hover:bg-gray-200 rounded-lg p-4 cursor-pointer transition duration-300 ease-in-out"
                             onClick={() => handleOpenModal(author)}
                         >
-                            <h3 className="text-lg font-semibold text-gray-800">{typeof author.name === 'string' ? author.name : 'Nom inconnu'}</h3>
+                            <h3 className="text-lg font-semibold text-gray-800">
+                                {typeof author.name === 'string' ? author.name : 'Nom inconnu'}
+                            </h3>
                         </li>
                     ))}
                 </ul>
@@ -104,6 +117,13 @@ export default function AuthorPage() {
                         onDelete={handleDeleteAuthor}
                         type="Auteur"
                         modalType={modalType}
+                    />
+                )}
+                {errorModalOpen && (
+                    <ErrorModal
+                        isOpen={errorModalOpen}
+                        onClose={() => setErrorModalOpen(false)}
+                        errorMessage={errorMessage}
                     />
                 )}
             </div>

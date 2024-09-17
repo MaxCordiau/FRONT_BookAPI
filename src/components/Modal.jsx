@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-const Modal = ({ isOpen, onClose, item, onSave, onDelete, type, modalType }) => {
+const Modal = ({ isOpen, onClose, item, onSave, onDelete, type, modalType, authors }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     isbn: '',
     publishedYear: '',
-    name: '',
-    birthDate: ''
+    authorId: '' // Ajout du champ pour l'ID de l'auteur
   });
 
   useEffect(() => {
@@ -18,6 +17,7 @@ const Modal = ({ isOpen, onClose, item, onSave, onDelete, type, modalType }) => 
           description: item.description || '',
           isbn: item.isbn || '',
           publishedYear: item.publishedYear || '',
+          authorId: item.authorId || '' // Chargement de l'ID de l'auteur si disponible
         });
       } else if (type === 'Auteur') {
         setFormData({
@@ -118,6 +118,26 @@ const Modal = ({ isOpen, onClose, item, onSave, onDelete, type, modalType }) => 
                   required
                 />
               </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="authorId">
+                  Auteur:
+                </label>
+                <select
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="authorId"
+                  name="authorId"
+                  value={formData.authorId}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Sélectionner un auteur</option>
+                  {authors.map((author) => (
+                    <option key={author.id} value={author.id}>
+                      {author.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </>
           )}
           {type === 'Auteur' && (
@@ -152,7 +172,7 @@ const Modal = ({ isOpen, onClose, item, onSave, onDelete, type, modalType }) => 
             </>
           )}
           <div className="flex items-center justify-between mt-8">
-            {modalType === 'edit' && (
+            {modalType === 'edit' && type === 'Livre' && (
               <button
                 type="button"
                 onClick={handleDelete}
